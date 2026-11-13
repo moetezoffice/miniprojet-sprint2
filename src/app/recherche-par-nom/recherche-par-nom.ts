@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Plante } from '../models/plante.model';
 import { PlantesService } from '../service/plantes.service';
@@ -11,13 +11,14 @@ import { SearchFilterPipe } from '../pipes/search-filter.pipe';
   templateUrl: './recherche-par-nom.html',
   styleUrl: './recherche-par-nom.css',
 })
-export class RechercheParNomComponent {
+export class RechercheParNomComponent implements OnInit {
   protected nomRecherche = '';
   protected searchTerm = '';
   protected filtreKeyup = '';
   protected toutesLesPlantes: Plante[];
   protected resultatsApi: Plante[];
   protected resultatsKeyup: Plante[];
+  protected erreur = '';
 
   private readonly plantesService = inject(PlantesService);
 
@@ -25,6 +26,17 @@ export class RechercheParNomComponent {
     this.toutesLesPlantes = this.plantesService.plantes();
     this.resultatsApi = this.toutesLesPlantes;
     this.resultatsKeyup = this.toutesLesPlantes;
+  }
+
+  ngOnInit(): void {
+    this.plantesService.charger().subscribe({
+      next: (plantes) => {
+        this.toutesLesPlantes = plantes;
+        this.resultatsApi = plantes;
+        this.resultatsKeyup = plantes;
+      },
+      error: () => { this.erreur = 'Impossible de charger les plantes depuis le backend.'; },
+    });
   }
 
   protected rechercherPlantes(): void {

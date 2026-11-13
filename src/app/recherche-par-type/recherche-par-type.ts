@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Type } from '../models/type.model';
 import { Plante } from '../models/plante.model';
@@ -11,7 +11,7 @@ import { PlantesService } from '../service/plantes.service';
   templateUrl: './recherche-par-type.html',
   styleUrl: './recherche-par-type.css',
 })
-export class RechercheParTypeComponent {
+export class RechercheParTypeComponent implements OnInit {
   protected types: Type[];
   protected plantes: Plante[] = [];
   protected idType: number | null = null;
@@ -20,6 +20,10 @@ export class RechercheParTypeComponent {
 
   constructor() {
     this.types = this.plantesService.listetypes();
+  }
+
+  ngOnInit(): void {
+    this.plantesService.charger().subscribe();
   }
 
   protected onChange(): void {

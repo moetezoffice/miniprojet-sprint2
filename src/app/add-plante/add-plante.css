@@ -1,19 +1,40 @@
-.atelier-form {
-  width: min(100%, 420px);
-  margin-left: 0;
+.form-page {
+  max-width: 32rem;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
-.atelier-form h2 {
-  margin: 0 0 0.25rem;
-  font-size: 2rem;
-  font-weight: 400;
+form {
+  display: grid;
+  grid-template-columns: 9rem minmax(10rem, 1fr);
+  gap: 0.65rem;
+  align-items: center;
 }
 
-.atelier-form .form-label {
-  margin-bottom: 0.35rem;
+input,
+select,
+button {
+  padding: 0.4rem;
+  font: inherit;
 }
 
-.atelier-form .field-id {
-  width: 170px;
-  margin-bottom: 0.25rem;
+.actions {
+  grid-column: 2;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.error {
+  color: #a00;
+}
+
+@media (max-width: 500px) {
+  form {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    grid-column: 1;
+  }
 }

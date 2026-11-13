@@ -1,20 +1,25 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Type } from '../models/type.model';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Plante } from '../models/plante.model';
+import { Type } from '../models/type.model';
 import { PlantesService } from '../service/plantes.service';
 
 @Component({
   selector: 'app-edit-plante',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './edit-plante.html',
   styleUrl: './edit-plante.css',
 })
-export class EditPlante {
-  protected types: Type[];
+export class EditPlante implements OnInit {
   protected plante?: Plante;
+  protected nom = '';
+  protected prix: number | null = null;
+  protected dateCreation = '';
+  protected types: Type[];
   protected typeId = 1;
+  protected chargement = true;
+  protected erreur = '';
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -22,25 +27,51 @@ export class EditPlante {
 
   constructor() {
     this.types = this.plantesService.listetypes();
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.plante = this.plantesService.consulterPlante(id);
+  }
 
-    if (!this.plante) {
+  ngOnInit(): void {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    if (!Number.isInteger(id) || id < 1) {
       void this.router.navigate(['/plantes']);
       return;
     }
 
-    this.typeId = this.plante.type.id;
+    const planteEnCache = this.plantesService.plantes().find((plante) => plante.id === id);
+    if (planteEnCache) {
+      this.afficherPlante(planteEnCache);
+      this.chargement = false;
+    }
+
+    this.plantesService.consulter(id).subscribe({
+      next: (plante) => { this.afficherPlante(plante); this.chargement = false; },
+      error: () => {
+        this.chargement = false;
+        this.erreur = 'Consultation impossible. Vérifiez le backend.';
+      },
+    });
   }
 
   protected modifierPlante(): void {
-    if (!this.plante) return;
+    if (!this.plante || !this.nom.trim() || this.prix === null || this.prix < 0 || !this.dateCreation) return;
+    const planteModifiee: Plante = {
+      ...this.plante,
+      nom: this.nom.trim(),
+      prix: this.prix,
+      dateCreation: new Date(`${this.dateCreation}T00:00:00`).toISOString(),
+      type: this.types.find((type) => type.id === Number(this.typeId)) ?? this.types[0],
+    };
 
-    const type = this.plantesService.consultertype(this.typeId);
-    const nom = this.plante.nom.trim();
-    if (!type || !nom || !Number.isFinite(this.plante.prix) || this.plante.prix < 0 || !this.plante.dateCreation) return;
+    this.plantesService.modifier(planteModifiee).subscribe({
+      next: () => { void this.router.navigate(['/plantes']); },
+      error: () => { this.erreur = 'Modification impossible. Vérifiez le backend.'; },
+    });
+  }
 
-    this.plantesService.modifier({ ...this.plante, nom, type });
-    void this.router.navigate(['/plantes']);
+  private afficherPlante(plante: Plante): void {
+    this.plante = plante;
+    this.nom = plante.nom;
+    this.prix = plante.prix;
+    this.dateCreation = plante.dateCreation.slice(0, 10);
+    this.typeId = plante.type.id;
   }
 }

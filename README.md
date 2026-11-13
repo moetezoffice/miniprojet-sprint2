@@ -31,3 +31,17 @@ L'API utilisee par Angular est <http://localhost:8090/produits/api>. Le JAR est 
 - `DELETE http://localhost:8090/produits/api/5` : supprimer l'identifiant 5
 
 La page affiche l'état de connexion en cas d'indisponibilité du backend. Les modifications sont enregistrées dans la base par l'API.
+
+## Authentification et droits
+
+- Compte administrateur : `admin` / `123`
+- Compte utilisateur : `moetez` / `123`
+- Les deux comptes peuvent consulter la liste. Seul `admin` peut ajouter, modifier ou supprimer des plantes.
+- La session est restauree depuis le stockage local. La deconnexion efface cette session.
+- Les routes de gestion sont protegees par un guard d'administrateur; une route protegee est redirigee vers la page de connexion ou d'acces refuse.
+
+Ces comptes sont des comptes de demonstration definis dans le frontend pour l'atelier.
+
+## Types et donnees de plantes
+
+La base conserve maintenant les exemples de plantes : Monstera deliciosa, Ficus elastica, Aloe vera, Basilic, Romarin, Lavande et Menthe. Le JAR fourni expose les champs produit (nom, prix et date), mais pas les types. Les choix de type (plantes d'interieur, succulentes, plantes aromatiques) sont donc conserves dans le stockage local du navigateur pour l'interface.

@@ -1,11 +1,14 @@
 :root {
-  font-family: Arial, sans-serif;
-  color: #111;
+  color-scheme: light;
 }
 
 body {
   min-width: 320px;
+  min-height: 100vh;
   margin: 0;
+  background: #fff;
+  color: #212529;
+  -webkit-font-smoothing: antialiased;
 }
 
 button,

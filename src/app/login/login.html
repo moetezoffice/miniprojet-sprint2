@@ -1,0 +1,18 @@
+<section class="form-page">
+  <h1>Connexion</h1>
+  <form (ngSubmit)="onLoggedin()">
+    <label for="username">Nom utilisateur</label>
+    <input id="username" name="username" type="text" [(ngModel)]="user.username" required autocomplete="username" />
+
+    <label for="password">Mot de passe</label>
+    <input id="password" name="password" type="password" [(ngModel)]="user.password" required autocomplete="current-password" />
+
+    @if (erreur) {
+      <p class="error" role="alert">Login ou mot de passe incorrect.</p>
+    }
+
+    <button type="submit">Connexion</button>
+  </form>
+  <p>Compte administrateur : admin / 123</p>
+  <p>Compte utilisateur : moetez / 123</p>
+</section>

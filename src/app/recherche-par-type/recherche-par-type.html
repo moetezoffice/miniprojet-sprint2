@@ -29,7 +29,7 @@
                   <td>{{ plante.nom }}</td>
                   <td>{{ plante.prix }}</td>
                   <td>{{ plante.dateCreation | date:'dd/MM/yyyy' }}</td>
-                  <td>{{ plante.type?.nom ?? 'AUCUN TYPE' }}</td>
+                  <td>{{ plante.type.nom }}</td>
                 </tr>
               } @empty {
                 <tr><td colspan="5" class="text-center text-muted">Aucune plante pour ce type.</td></tr>
