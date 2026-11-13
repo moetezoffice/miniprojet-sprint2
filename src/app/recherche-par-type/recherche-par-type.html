@@ -1,25 +1,25 @@
 <section class="atelier-search">
-  <h2>Recherche par catégorie</h2>
+  <h2>Recherche par type</h2>
 
   <div class="search-control">
-    <label for="plantCategory" class="form-label">Catégories</label>
-    <select id="plantCategory" class="form-select" name="idCategorie"
-      [(ngModel)]="idCategorie" (ngModelChange)="onChange()">
-      <option [ngValue]="null">Choisir une catégorie</option>
-      @for (categorie of categories; track categorie.id) {
-        <option [ngValue]="categorie.id">{{ categorie.nom }}</option>
+    <label for="plantType" class="form-label">Type</label>
+    <select id="plantType" class="form-select" name="idType"
+      [(ngModel)]="idType" (ngModelChange)="onChange()">
+      <option [ngValue]="null">Choisir un type</option>
+      @for (type of types; track type.id) {
+        <option [ngValue]="type.id">{{ type.nom }}</option>
       }
     </select>
   </div>
 
-  @if (idCategorie !== null) {
+  @if (idType !== null) {
     <div class="card shadow-sm mt-4">
       <div class="card-body">
         <div class="table-responsive">
           <table class="table table-striped mb-0">
             <thead>
               <tr>
-                <th>Id</th><th>Nom</th><th>Prix</th><th>Date création</th><th>Catégorie</th>
+                <th>Id</th><th>Nom</th><th>Prix</th><th>Date création</th><th>Type</th>
               </tr>
             </thead>
             <tbody>
@@ -29,10 +29,10 @@
                   <td>{{ plante.nom }}</td>
                   <td>{{ plante.prix }}</td>
                   <td>{{ plante.dateCreation | date:'dd/MM/yyyy' }}</td>
-                  <td>{{ plante.categorie?.nom ?? 'PAS DE CATÉGORIE' }}</td>
+                  <td>{{ plante.type?.nom ?? 'AUCUN TYPE' }}</td>
                 </tr>
               } @empty {
-                <tr><td colspan="5" class="text-center text-muted">Aucune plante pour cette catégorie.</td></tr>
+                <tr><td colspan="5" class="text-center text-muted">Aucune plante pour ce type.</td></tr>
               }
             </tbody>
           </table>

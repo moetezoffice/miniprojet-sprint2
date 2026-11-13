@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RechercheParCategorie } from './recherche-par-categorie';
+import { RechercheParTypeComponent } from './recherche-par-type';
 
-describe('RechercheParCategorie', () => {
-  let component: RechercheParCategorie;
-  let fixture: ComponentFixture<RechercheParCategorie>;
+describe('RechercheParTypeComponent', () => {
+  let component: RechercheParTypeComponent;
+  let fixture: ComponentFixture<RechercheParTypeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RechercheParCategorie],
+      imports: [RechercheParTypeComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(RechercheParCategorie);
+    fixture = TestBed.createComponent(RechercheParTypeComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

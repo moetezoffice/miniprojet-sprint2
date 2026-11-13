@@ -27,10 +27,10 @@
       </div>
 
       <div class="mb-2">
-        <label for="plantCategory" class="form-label">Catégorie</label>
-        <select id="plantCategory" class="form-select" name="categorieId" [(ngModel)]="categorieId" required>
-          @for (categorie of categories; track categorie.id) {
-            <option [ngValue]="categorie.id">{{ categorie.nom }}</option>
+        <label for="plantType" class="form-label">Type</label>
+        <select id="plantType" class="form-select" name="typeId" [(ngModel)]="typeId" required>
+          @for (type of types; track type.id) {
+            <option [ngValue]="type.id">{{ type.nom }}</option>
           }
         </select>
       </div>

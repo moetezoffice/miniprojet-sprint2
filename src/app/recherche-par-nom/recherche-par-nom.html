@@ -17,12 +17,12 @@
 
       <div class="table-responsive mt-3">
         <table class="table table-striped mb-0">
-          <thead><tr><th>Id</th><th>Nom</th><th>Prix</th><th>Date création</th><th>Catégorie</th></tr></thead>
+          <thead><tr><th>Id</th><th>Nom</th><th>Prix</th><th>Date création</th><th>Type</th></tr></thead>
           <tbody>
             @for (plante of resultatsApi; track plante.id) {
               <tr>
                 <td>{{ plante.id }}</td><td>{{ plante.nom }}</td><td>{{ plante.prix }}</td>
-                <td>{{ plante.dateCreation | date:'dd/MM/yyyy' }}</td><td>{{ plante.categorie?.nom ?? 'PAS DE CATÉGORIE' }}</td>
+                <td>{{ plante.dateCreation | date:'dd/MM/yyyy' }}</td><td>{{ plante.type?.nom ?? 'AUCUN TYPE' }}</td>
               </tr>
             } @empty {
               <tr><td colspan="5" class="text-center text-muted">Aucun résultat.</td></tr>
@@ -42,12 +42,12 @@
 
       <div class="table-responsive mt-3">
         <table class="table table-striped mb-0">
-          <thead><tr><th>Id</th><th>Nom</th><th>Prix</th><th>Date création</th><th>Catégorie</th></tr></thead>
+          <thead><tr><th>Id</th><th>Nom</th><th>Prix</th><th>Date création</th><th>Type</th></tr></thead>
           <tbody>
             @for (plante of resultatsKeyup; track plante.id) {
               <tr>
                 <td>{{ plante.id }}</td><td>{{ plante.nom }}</td><td>{{ plante.prix }}</td>
-                <td>{{ plante.dateCreation | date:'dd/MM/yyyy' }}</td><td>{{ plante.categorie?.nom ?? 'PAS DE CATÉGORIE' }}</td>
+                <td>{{ plante.dateCreation | date:'dd/MM/yyyy' }}</td><td>{{ plante.type?.nom ?? 'AUCUN TYPE' }}</td>
               </tr>
             } @empty {
               <tr><td colspan="5" class="text-center text-muted">Aucun résultat.</td></tr>
@@ -67,12 +67,12 @@
 
       <div class="table-responsive mt-3">
         <table class="table table-striped mb-0">
-          <thead><tr><th>Id</th><th>Nom</th><th>Prix</th><th>Date création</th><th>Catégorie</th></tr></thead>
+          <thead><tr><th>Id</th><th>Nom</th><th>Prix</th><th>Date création</th><th>Type</th></tr></thead>
           <tbody>
             @for (plante of toutesLesPlantes | searchFilter: searchTerm; track plante.id) {
               <tr>
                 <td>{{ plante.id }}</td><td>{{ plante.nom }}</td><td>{{ plante.prix }}</td>
-                <td>{{ plante.dateCreation | date:'dd/MM/yyyy' }}</td><td>{{ plante.categorie?.nom ?? 'PAS DE CATÉGORIE' }}</td>
+                <td>{{ plante.dateCreation | date:'dd/MM/yyyy' }}</td><td>{{ plante.type?.nom ?? 'AUCUN TYPE' }}</td>
               </tr>
             } @empty {
               <tr><td colspan="5" class="text-center text-muted">Aucun résultat.</td></tr>

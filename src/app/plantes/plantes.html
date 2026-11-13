@@ -9,7 +9,7 @@
               <th scope="col">Nom</th>
               <th scope="col">Prix</th>
               <th scope="col">Date création</th>
-              <th scope="col">Catégorie</th>
+              <th scope="col">Type</th>
               <th scope="col" aria-label="Supprimer"></th>
               <th scope="col" aria-label="Modifier"></th>
             </tr>
@@ -21,7 +21,7 @@
                 <td>{{ plante.nom }}</td>
                 <td>{{ plante.prix }}</td>
                 <td>{{ plante.dateCreation.slice(8, 10) }}/{{ plante.dateCreation.slice(5, 7) }}/{{ plante.dateCreation.slice(0, 4) }}</td>
-                <td>{{ plante.categorie.nom }}</td>
+                <td>{{ plante.type.nom }}</td>
                 <td>
                   <button class="btn btn-danger" type="button" (click)="supprimerPlante(plante)">Supprimer</button>
                 </td>

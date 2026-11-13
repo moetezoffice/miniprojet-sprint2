@@ -1,65 +1,81 @@
-import { Injectable, signal } from '@angular/core';
-import { Categorie } from '../models/categorie.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable, inject, signal } from '@angular/core';
+import { Observable, map, tap } from 'rxjs';
+import { Type } from '../models/type.model';
 import { Plante } from '../models/plante.model';
-import { Observable, of } from 'rxjs';
+
+interface ProduitApi {
+  idProduit?: number;
+  nomProduit: string;
+  prixProduit: number;
+  dateCreation?: string | number;
+}
 
 @Injectable({ providedIn: 'root' })
 export class PlantesService {
-  readonly categories: Categorie[] = [
-    { id: 1, nom: 'Plantes d’intérieur' },
-    { id: 2, nom: 'Succulentes' },
-    { id: 3, nom: 'Plantes aromatiques' },
-  ];
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:8090/produits/api';
+  private readonly httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  };
+  private readonly typeParDefaut: Type = { id: 1, nom: 'Plante' };
+  readonly plantes = signal<Plante[]>([]);
 
-  readonly plantes = signal<Plante[]>([
-    { id: 1, nom: 'Monstera deliciosa', prix: 45, dateCreation: '2025-03-12', categorie: this.categories[0] },
-    { id: 2, nom: 'Ficus elastica', prix: 32, dateCreation: '2025-04-08', categorie: this.categories[0] },
-    { id: 3, nom: 'Aloe vera', prix: 12, dateCreation: '2025-05-20', categorie: this.categories[1] },
-  ]);
-
-  get prochainId(): number {
-    return Math.max(0, ...this.plantes().map((plante) => plante.id)) + 1;
-  }
-
-  listeCategories(): Categorie[] {
-    return this.categories;
-  }
-
-  consulterCategorie(id: number): Categorie | undefined {
-    return this.categories.find((categorie) => categorie.id === Number(id));
-  }
-
-  consulterPlante(id: number): Plante | undefined {
-    return this.plantes().find((plante) => plante.id === Number(id));
-  }
-
-  rechercherParCategorie(idCategorie: number): Observable<Plante[]> {
-    return of(this.plantes().filter((plante) => plante.categorie.id === Number(idCategorie)));
-  }
-
-  rechercherParNom(nom: string): Observable<Plante[]> {
-    const recherche = nom.trim().toLocaleLowerCase();
-    return of(this.plantes().filter((plante) => plante.nom.toLocaleLowerCase().includes(recherche)));
-  }
-
-  ajouter(nom: string, prix: number, dateCreation: string, categorieId: number): void {
-    const plante = nom.trim();
-    const categorie = this.consulterCategorie(categorieId);
-    if (plante && categorie && prix >= 0 && dateCreation) {
-      this.plantes.update((plantes) => [
-        ...plantes,
-        { id: this.prochainId, nom: plante, prix, dateCreation, categorie },
-      ]);
-    }
-  }
-
-  supprimerPlante(planteASupprimer: Plante): void {
-    this.plantes.update((plantes) => plantes.filter((plante) => plante.id !== planteASupprimer.id));
-  }
-
-  modifier(planteModifiee: Plante): void {
-    this.plantes.update((plantes) =>
-      plantes.map((plante) => (plante.id === planteModifiee.id ? planteModifiee : plante)),
+  charger(): Observable<Plante[]> {
+    return this.http.get<ProduitApi[]>(this.apiUrl).pipe(
+      map((produits) => produits.map((produit) => this.depuisApi(produit))),
+      tap((plantes) => this.plantes.set(plantes)),
     );
+  }
+
+  ajouter(nom: string, prix: number): Observable<Plante> {
+    return this.http.post<ProduitApi>(this.apiUrl, {
+      nomProduit: nom.trim(),
+      prixProduit: prix,
+      dateCreation: new Date().toISOString(),
+    }, this.httpOptions).pipe(
+      map((produit) => this.depuisApi(produit)),
+      tap((plante) => this.plantes.update((plantes) => [...plantes, plante])),
+    );
+  }
+
+  modifier(plante: Plante): Observable<Plante> {
+    return this.http.put<ProduitApi>(this.apiUrl, {
+      idProduit: plante.id,
+      nomProduit: plante.nom.trim(),
+      prixProduit: plante.prix,
+      dateCreation: plante.dateCreation,
+    }, this.httpOptions).pipe(
+      map((produit) => this.depuisApi(produit)),
+      tap((planteModifiee) => this.plantes.update((plantes) =>
+        plantes.map((element) => element.id === planteModifiee.id ? planteModifiee : element),
+      )),
+    );
+  }
+
+  supprimer(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, this.httpOptions).pipe(
+      tap(() => this.plantes.update((plantes) => plantes.filter((plante) => plante.id !== id))),
+    );
+  }
+
+  consulter(id: number): Observable<Plante> {
+    return this.http.get<ProduitApi>(`${this.apiUrl}/${id}`).pipe(
+      map((produit) => this.depuisApi(produit)),
+    );
+  }
+
+  private depuisApi(produit: ProduitApi): Plante {
+    const date = produit.dateCreation;
+    const dateCreation = typeof date === 'number'
+      ? new Date(date).toISOString()
+      : date ?? new Date().toISOString();
+    return {
+      id: produit.idProduit ?? 0,
+      nom: produit.nomProduit,
+      prix: produit.prixProduit,
+      dateCreation,
+      type: this.typeParDefaut,
+    };
   }
 }

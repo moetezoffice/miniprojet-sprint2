@@ -1,34 +1,34 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Categorie } from '../models/categorie.model';
+import { Type } from '../models/type.model';
 import { Plante } from '../models/plante.model';
 import { PlantesService } from '../service/plantes.service';
 
 @Component({
-  selector: 'app-recherche-par-categorie',
+  selector: 'app-recherche-par-type',
   imports: [FormsModule, DatePipe],
-  templateUrl: './recherche-par-categorie.html',
-  styleUrl: './recherche-par-categorie.css',
+  templateUrl: './recherche-par-type.html',
+  styleUrl: './recherche-par-type.css',
 })
-export class RechercheParCategorieComponent {
-  protected categories: Categorie[];
+export class RechercheParTypeComponent {
+  protected types: Type[];
   protected plantes: Plante[] = [];
-  protected idCategorie: number | null = null;
+  protected idType: number | null = null;
 
   private readonly plantesService = inject(PlantesService);
 
   constructor() {
-    this.categories = this.plantesService.listeCategories();
+    this.types = this.plantesService.listetypes();
   }
 
   protected onChange(): void {
-    if (this.idCategorie === null) {
+    if (this.idType === null) {
       this.plantes = [];
       return;
     }
 
-    this.plantesService.rechercherParCategorie(this.idCategorie).subscribe((plantes) => {
+    this.plantesService.rechercherParType(this.idType).subscribe((plantes) => {
       this.plantes = plantes;
     });
   }

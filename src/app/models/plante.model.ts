@@ -1,9 +1,9 @@
-import { Categorie } from './categorie.model';
+import { Type } from './type.model';
 
 export interface Plante {
   id: number;
   nom: string;
   prix: number;
   dateCreation: string;
-  categorie: Categorie;
+  type: Type;
 }

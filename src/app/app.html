@@ -1,33 +1,62 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark atelier-nav">
-  <div class="container-fluid px-3 px-lg-4">
-    <a class="navbar-brand" routerLink="/plantes">Gestion Plantes</a>
+<main class="page">
+  <h1>Gestion des plantes</h1>
+  <p>Ajouter, modifier ou supprimer une plante.</p>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation"
-      aria-controls="mainNavigation" aria-expanded="false" aria-label="Ouvrir le menu">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+  @if (erreur) {
+    <p role="alert">{{ erreur }}</p>
+  }
+  @if (message) {
+    <p role="status">{{ message }}</p>
+  }
 
-    <div class="collapse navbar-collapse" id="mainNavigation">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/plantes" routerLinkActive="active">Home</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">Plantes</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" routerLink="/plantes">Liste des plantes</a></li>
-            <li><a class="dropdown-item" routerLink="/add-plante">Ajouter une plante</a></li>
-            <li> <a class="dropdown-item"  routerLink="/rechercheParCategorie" >Recherche Par Catégorie</a></li>
-            <li><a class="dropdown-item" routerLink="/rechercheParNom">Recherche par nom</a></li>
-          </ul>
-        </li>
-      </ul>
-      <span class="navbar-text">[username] <span aria-hidden="true">▾</span></span>
-    </div>
-  </div>
-</nav>
+  <section aria-labelledby="form-title">
+    <h2 id="form-title">{{ planteEnEdition ? 'Modifier une plante' : 'Ajouter une plante' }}</h2>
+    <form (ngSubmit)="enregistrer()">
+      <label for="nom">Nom</label>
+      <input id="nom" name="nom" [(ngModel)]="nom" required maxlength="80" />
 
-<main class="container page-shell">
-  <router-outlet />
+      <label for="prix">Prix</label>
+      <input id="prix" name="prix" type="number" [(ngModel)]="prix" min="0" step="0.01" required />
+
+      <div class="actions">
+        <button type="submit" [disabled]="!nom.trim() || prix === null || prix < 0">
+          {{ planteEnEdition ? 'Enregistrer' : 'Ajouter' }}
+        </button>
+        @if (planteEnEdition) {
+          <button type="button" (click)="annulerEdition()">Annuler</button>
+        }
+      </div>
+    </form>
+  </section>
+
+  <section aria-labelledby="list-title">
+    <h2 id="list-title">Liste des plantes</h2>
+    <label for="recherche">Rechercher par nom</label>
+    <input id="recherche" name="recherche" type="search" [(ngModel)]="recherche" />
+
+    @if (chargement) {
+      <p>Chargement…</p>
+    } @else {
+      <table>
+        <thead>
+          <tr><th scope="col">ID</th><th scope="col">Nom</th><th scope="col">Prix</th><th scope="col">Actions</th></tr>
+        </thead>
+        <tbody>
+          @for (plante of plantesFiltrees; track plante.id) {
+            <tr>
+              <td>{{ plante.id }}</td>
+              <td>{{ plante.nom }}</td>
+              <td>{{ plante.prix }}</td>
+              <td class="actions">
+                <button type="button" (click)="editer(plante)">Modifier</button>
+                <button type="button" (click)="supprimer(plante)">Supprimer</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="4">Aucune plante à afficher.</td></tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
 </main>

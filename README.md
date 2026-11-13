@@ -1,35 +1,33 @@
-# MesPlantes
+# Gestion des plantes
 
-Petit atelier Angular de gestion d’une collection de plantes, adapté de l’atelier « MesProduits ».
+Application Angular simple de gestion de plantes connectée au backend fourni dans `api_rest_produits.jar`. Le backend garde les données sous la forme de produits (`nomProduit`, `prixProduit`); l'interface les présente comme des plantes.
 
-## Lancer le projet
+## Démarrage
 
-```bash
-npm install
-npm start
-```
+1. Démarrer MySQL. Le JAR utilise la base `demo_DB`, l'utilisateur `root` et aucun mot de passe.
+2. Démarrer le backend dans un terminal:
 
-Ouvrez ensuite <http://localhost:4200/>. La page d’accueil redirige vers `/plantes`.
+   ```powershell
+   java -Dserver.port=8090 -jar C:\Users\PCMike\Downloads\api_rest_produits.jar
+   ```
 
-## Fonctionnalités
+3. Dans un autre terminal, lancer Angular depuis le dossier `MesPlantes`:
 
-- Navigation Bootstrap entre la collection et les formulaires.
-- Affichage des plantes et de leur catégorie avec la syntaxe Angular `@for`.
-- Ajout d’une plante en choisissant sa catégorie.
-- Modification du nom et de la catégorie depuis une route qui contient l’identifiant de la plante.
-- Suppression d’une plante après confirmation.
-- Recherche de plantes par catégorie et par nom.
-- Démonstration du filtrage à la frappe et avec un pipe Angular.
-- Redirection des URL inconnues vers la collection.
+   ```powershell
+   npm install
+   npm start
+   ```
 
-## Adaptation des ateliers 03 et 04
+4. Ouvrir <http://localhost:4200/>.
 
-Les exemples « produit » des ateliers deviennent des plantes dans cette application. La collection conserve un identifiant, un nom, un prix, une date de création et une catégorie pour chaque plante. La page de collection permet de lancer la modification ou la suppression; la route `/edit-plante/:id` transmet l’identifiant au formulaire, qui le garde en lecture seule. Les catégories sont définies dans le service puis réutilisées à l’ajout, à l’affichage, à la modification et à la recherche.
+L'API utilisee par Angular est <http://localhost:8090/produits/api>. Le JAR est demarre sur le port 8090 dans les commandes ci-dessus.
 
-L’atelier 07 est adapté aux données locales du projet : la recherche par catégorie, la recherche par nom et les deux filtres dynamiques travaillent sur la collection partagée. Le service renvoie des `Observable` pour illustrer la forme de l’atelier, mais aucune API Spring Boot n’est connectée dans ce projet. Le pipe `searchFilter` filtre la liste directement dans le template.
+## API à vérifier avec Postman
 
-### Présentation courte
+- `GET http://localhost:8090/produits/api` : lister les plantes
+- `GET http://localhost:8090/produits/api/2` : consulter l'identifiant 2
+- `POST http://localhost:8090/produits/api` avec le corps JSON `{"nomProduit":"Basilic","prixProduit":8}` : ajouter
+- `PUT http://localhost:8090/produits/api` avec le corps JSON `{"idProduit":2,"nomProduit":"Basilic","prixProduit":10,"dateCreation":"2026-11-13T00:00:00.000Z"}` : modifier
+- `DELETE http://localhost:8090/produits/api/5` : supprimer l'identifiant 5
 
-« MesPlantes est une application Angular de gestion d’une collection de plantes. Un service partagé garde les plantes et leurs catégories en mémoire. On peut ajouter, modifier et supprimer une plante, puis rechercher la collection par catégorie ou par nom. La recherche par nom montre trois techniques : un appel au service, un filtrage à la frappe et un pipe Angular. Les données restent en mémoire; une API Spring Boot et une base de données pourraient être ajoutées pour les sauvegarder durablement. »
-
-Les plantes et leurs modifications sont conservées dans l’état en mémoire pendant la session courante; elles ne sont pas enregistrées dans une base de données.
+La page affiche l'état de connexion en cas d'indisponibilité du backend. Les modifications sont enregistrées dans la base par l'API.

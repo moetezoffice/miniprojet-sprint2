@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Categorie } from '../models/categorie.model';
+import { Type } from '../models/type.model';
 import { Plante } from '../models/plante.model';
 import { PlantesService } from '../service/plantes.service';
 
@@ -12,16 +12,16 @@ import { PlantesService } from '../service/plantes.service';
   styleUrl: './edit-plante.css',
 })
 export class EditPlante {
-  protected categories: Categorie[];
+  protected types: Type[];
   protected plante?: Plante;
-  protected categorieId = 1;
+  protected typeId = 1;
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly plantesService = inject(PlantesService);
 
   constructor() {
-    this.categories = this.plantesService.listeCategories();
+    this.types = this.plantesService.listetypes();
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.plante = this.plantesService.consulterPlante(id);
 
@@ -30,17 +30,17 @@ export class EditPlante {
       return;
     }
 
-    this.categorieId = this.plante.categorie.id;
+    this.typeId = this.plante.type.id;
   }
 
   protected modifierPlante(): void {
     if (!this.plante) return;
 
-    const categorie = this.plantesService.consulterCategorie(this.categorieId);
+    const type = this.plantesService.consultertype(this.typeId);
     const nom = this.plante.nom.trim();
-    if (!categorie || !nom || !Number.isFinite(this.plante.prix) || this.plante.prix < 0 || !this.plante.dateCreation) return;
+    if (!type || !nom || !Number.isFinite(this.plante.prix) || this.plante.prix < 0 || !this.plante.dateCreation) return;
 
-    this.plantesService.modifier({ ...this.plante, nom, categorie });
+    this.plantesService.modifier({ ...this.plante, nom, type });
     void this.router.navigate(['/plantes']);
   }
 }
